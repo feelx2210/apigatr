@@ -1,8 +1,12 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Globe, Shield, Zap } from "lucide-react";
+import ApiUploadModal from "./ApiUploadModal";
 
 const Hero = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <section className="relative py-12 lg:py-20 overflow-hidden">
       {/* Background gradient */}
@@ -28,6 +32,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="bg-crocodile-dark hover:bg-crocodile-medium text-white px-8 py-4 text-lg h-auto group"
+              onClick={() => setIsModalOpen(true)}
             >
               Start Building Plugins
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -58,6 +63,11 @@ const Hero = () => {
           </div>
         </div>
       </div>
+      
+      <ApiUploadModal 
+        open={isModalOpen} 
+        onOpenChange={setIsModalOpen} 
+      />
     </section>
   );
 };
