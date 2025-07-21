@@ -1,9 +1,10 @@
+
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, Zap, Globe, Shield } from "lucide-react";
+import { ArrowRight, Play, Globe, Shield, Zap } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative py-20 lg:py-32 overflow-hidden">
+    <section className="relative py-12 lg:py-20 overflow-hidden">
       {/* Background gradient */}
       <div 
         className="absolute inset-0 opacity-30"
@@ -12,23 +13,18 @@ const Hero = () => {
       
       <div className="container mx-auto px-4 relative">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-tan-light text-crocodile-dark text-sm font-medium mb-8">
-            <Zap className="w-4 h-4 mr-2" />
-            Transform APIs into plugins in minutes
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-crocodile-dark mb-6 leading-tight">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-crocodile-dark mb-4 leading-tight">
             Turn your API into
             <span className="block text-primary">plugins</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-3xl mx-auto leading-relaxed">
             Upload your API docs and instantly generate ready-to-publish plugins for 
             <span className="font-semibold text-crocodile-medium"> Shopify, Webflow, WordPress, and more</span> – 
             with live sync, versioning, and usage insights built in.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
             <Button 
               size="lg" 
               className="bg-crocodile-dark hover:bg-crocodile-medium text-white px-8 py-4 text-lg h-auto group"
