@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import apigatorLogo from "@/assets/apigator-logo.png";
+import apigatrLogo from "@/assets/apigatr-logo.png";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
 
 const Footer = () => {
@@ -13,7 +13,7 @@ const Footer = () => {
             Ready to scale your API?
           </h2>
           <p className="text-xl text-crocodile-medium mb-8 max-w-2xl mx-auto">
-            Join thousands of developers who are already using APIGATOR to deploy their APIs everywhere.
+            Join thousands of developers who are already using APIGATR to deploy their APIs everywhere.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <Input 
@@ -32,11 +32,11 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <img 
-                src={apigatorLogo} 
-                alt="APIGATOR" 
+                src={apigatrLogo} 
+                alt="APIGATR" 
                 className="h-8 w-8 filter brightness-0 invert"
               />
-              <span className="text-2xl font-bold">APIGATOR</span>
+              <span className="text-2xl font-bold">APIGATR</span>
             </div>
             <p className="text-gray-300 max-w-sm">
               Transform your APIs into plugins for 100+ platforms with live sync, versioning, and enterprise security.
@@ -97,7 +97,7 @@ const Footer = () => {
         {/* Bottom */}
         <div className="border-t border-crocodile-medium pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-300 text-sm">
-            © 2024 APIGATOR. All rights reserved.
+            © 2024 APIGATR. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">Terms</a>

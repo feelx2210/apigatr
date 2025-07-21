@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Star } from "lucide-react";
 
@@ -9,7 +10,7 @@ const Testimonials = () => {
       company: "DataFlow Analytics",
       image: "👩‍💼",
       rating: 5,
-      content: "APIGATOR transformed how we distribute our API. We went from months of custom plugin development to having our API available on 50+ platforms in just one week. The ROI has been incredible."
+      content: "APIGATR transformed how we distribute our API. We went from months of custom plugin development to having our API available on 50+ platforms in just one week. The ROI has been incredible."
     },
     {
       name: "Marcus Rodriguez",
@@ -25,7 +26,7 @@ const Testimonials = () => {
       company: "CloudAPI Services",
       image: "👩‍🔬",
       rating: 5,
-      content: "We've scaled from 3 integrations to 80+ in just 3 months using APIGATOR. The analytics dashboard gives us insights we never had before about how our API is being used."
+      content: "We've scaled from 3 integrations to 80+ in just 3 months using APIGATR. The analytics dashboard gives us insights we never had before about how our API is being used."
     },
     {
       name: "David Kumar",
@@ -33,7 +34,7 @@ const Testimonials = () => {
       company: "StartupTech",
       image: "👨‍🚀",
       rating: 5,
-      content: "As a startup, we needed to integrate everywhere fast. APIGATOR made it possible to compete with enterprise solutions from day one. Our API is now available on more platforms than our competitors."
+      content: "As a startup, we needed to integrate everywhere fast. APIGATR made it possible to compete with enterprise solutions from day one. Our API is now available on more platforms than our competitors."
     },
     {
       name: "Emily Watson",
@@ -49,7 +50,7 @@ const Testimonials = () => {
       company: "API First Solutions",
       image: "👨‍🔧",
       rating: 5,
-      content: "APIGATOR's enterprise security features gave us the confidence to deploy across all major platforms. SOC2 compliance and detailed audit logs were exactly what we needed."
+      content: "APIGATR's enterprise security features gave us the confidence to deploy across all major platforms. SOC2 compliance and detailed audit logs were exactly what we needed."
     }
   ];
 

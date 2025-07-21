@@ -1,5 +1,6 @@
+
 import { Button } from "@/components/ui/button";
-import apigatorLogo from "@/assets/apigator-logo.png";
+import apigatrLogo from "@/assets/apigatr-logo.png";
 
 const Header = () => {
   return (
@@ -7,11 +8,11 @@ const Header = () => {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <img 
-            src={apigatorLogo} 
-            alt="APIGATOR" 
+            src={apigatrLogo} 
+            alt="APIGATR" 
             className="h-8 w-8"
           />
-          <span className="text-2xl font-bold text-crocodile-dark">APIGATOR</span>
+          <span className="text-2xl font-bold text-crocodile-dark">APIGATR</span>
         </div>
         
         <nav className="hidden md:flex items-center space-x-8">
