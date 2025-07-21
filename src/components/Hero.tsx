@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Globe, Shield, Zap } from "lucide-react";
-import ApiUploadModal from "./ApiUploadModal";
+import PluginGenerationModal from "./PluginGenerationModal";
 
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,7 +64,7 @@ const Hero = () => {
         </div>
       </div>
       
-      <ApiUploadModal 
+      <PluginGenerationModal 
         open={isModalOpen} 
         onOpenChange={setIsModalOpen} 
       />
