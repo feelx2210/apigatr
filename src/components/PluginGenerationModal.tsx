@@ -18,6 +18,7 @@ import type { ParsedAPI, PlatformTransformation } from "@/lib/transformation/typ
 import PlatformCard from "./PlatformCard";
 import ApiUploadStep from "./ApiUploadStep";
 import ApiAnalysisStep from "./ApiAnalysisStep";
+import { PluginDownloadModal } from "./PluginDownloadModal";
 
 interface PluginGenerationModalProps {
   open: boolean;
@@ -32,6 +33,7 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
   const [data, setData] = useState<PluginGenerationData>({} as PluginGenerationData);
   const [parsedAPI, setParsedAPI] = useState<ParsedAPI | null>(null);
   const [transformation, setTransformation] = useState<PlatformTransformation | null>(null);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const { toast } = useToast();
 
   const handlePlatformSelect = (platform: Platform) => {
@@ -111,18 +113,8 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
       }
       
       setTransformation(platformTransformation);
-      
-      // Here you would typically send the generated code to a backend service
-      // or allow the user to download the generated files
-      console.log('Generated transformation:', platformTransformation);
-      
-      toast({
-        title: "Plugin Generated!",
-        description: `Your ${data.platform.name} plugin has been created successfully. Check the console for the generated code.`,
-      });
-      
+      setShowDownloadModal(true);
       onOpenChange(false);
-      resetModal();
     } catch (error) {
       console.error('Plugin generation failed:', error);
       toast({
@@ -161,6 +153,7 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -315,6 +308,22 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
         </div>
       </DialogContent>
     </Dialog>
+    
+    {transformation && (
+      <PluginDownloadModal
+        open={showDownloadModal}
+        onOpenChange={(open) => {
+          setShowDownloadModal(open);
+          if (!open) {
+            resetModal();
+          }
+        }}
+        transformation={transformation}
+        platformName={data.platform?.name || ''}
+        apiName={parsedAPI?.name || ''}
+      />
+    )}
+  </>
   );
 };
 
