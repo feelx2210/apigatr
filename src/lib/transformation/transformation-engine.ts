@@ -1,0 +1,90 @@
+import { OpenAPIParser } from './openapi-parser';
+import { ShopifyTransformer } from './transformers/shopify-transformer';
+import { ParsedAPI, PlatformTransformation } from './types';
+
+export class TransformationEngine {
+  private parser: OpenAPIParser;
+  private transformers: Map<string, any>;
+
+  constructor() {
+    this.parser = new OpenAPIParser();
+    this.transformers = new Map();
+    
+    // Register platform transformers
+    this.transformers.set('shopify', new ShopifyTransformer());
+  }
+
+  async transformFromUrl(url: string, platform: string): Promise<PlatformTransformation> {
+    console.log(`Starting transformation of API from URL: ${url} for platform: ${platform}`);
+    
+    try {
+      // Parse the OpenAPI specification
+      const parsedAPI = await this.parser.parseFromUrl(url);
+      console.log('API parsed successfully:', parsedAPI.name);
+      
+      // Get the appropriate transformer
+      const transformer = this.transformers.get(platform);
+      if (!transformer) {
+        throw new Error(`No transformer available for platform: ${platform}`);
+      }
+      
+      // Transform the API to platform-specific implementation
+      const transformation = transformer.transform(parsedAPI);
+      console.log('Transformation completed successfully');
+      
+      return transformation;
+    } catch (error) {
+      console.error('Transformation failed:', error);
+      throw error;
+    }
+  }
+
+  async transformFromFile(file: File, platform: string): Promise<PlatformTransformation> {
+    console.log(`Starting transformation of API from file: ${file.name} for platform: ${platform}`);
+    
+    try {
+      // Parse the OpenAPI specification
+      const parsedAPI = await this.parser.parseFromFile(file);
+      console.log('API parsed successfully:', parsedAPI.name);
+      
+      // Get the appropriate transformer
+      const transformer = this.transformers.get(platform);
+      if (!transformer) {
+        throw new Error(`No transformer available for platform: ${platform}`);
+      }
+      
+      // Transform the API to platform-specific implementation
+      const transformation = transformer.transform(parsedAPI);
+      console.log('Transformation completed successfully');
+      
+      return transformation;
+    } catch (error) {
+      console.error('Transformation failed:', error);
+      throw error;
+    }
+  }
+
+  async analyzeAPI(source: 'url' | 'file', data: string | File): Promise<ParsedAPI> {
+    try {
+      if (source === 'url') {
+        return await this.parser.parseFromUrl(data as string);
+      } else {
+        return await this.parser.parseFromFile(data as File);
+      }
+    } catch (error) {
+      console.error('API analysis failed:', error);
+      throw error;
+    }
+  }
+
+  getSupportedPlatforms(): string[] {
+    return Array.from(this.transformers.keys());
+  }
+
+  hasPlatformSupport(platform: string): boolean {
+    return this.transformers.has(platform);
+  }
+}
+
+// Export singleton instance
+export const transformationEngine = new TransformationEngine();

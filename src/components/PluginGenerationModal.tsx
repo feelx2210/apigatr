@@ -13,6 +13,8 @@ import { ArrowLeft, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Platform, PluginGenerationData } from "@/types/platform";
 import { platforms } from "@/data/platforms";
+import { transformationEngine } from "@/lib/transformation/transformation-engine";
+import type { ParsedAPI, PlatformTransformation } from "@/lib/transformation/types";
 import PlatformCard from "./PlatformCard";
 import ApiUploadStep from "./ApiUploadStep";
 import ApiAnalysisStep from "./ApiAnalysisStep";
@@ -28,6 +30,8 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
   const [currentStep, setCurrentStep] = useState<Step>('platform');
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<PluginGenerationData>({} as PluginGenerationData);
+  const [parsedAPI, setParsedAPI] = useState<ParsedAPI | null>(null);
+  const [transformation, setTransformation] = useState<PlatformTransformation | null>(null);
   const { toast } = useToast();
 
   const handlePlatformSelect = (platform: Platform) => {
@@ -36,54 +40,106 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
 
   const handleApiSubmit = async (apiData: { source: 'url' | 'file'; url?: string; file?: File }) => {
     setIsLoading(true);
-    setData(prev => ({
-      ...prev,
-      apiSource: apiData.source,
-      apiUrl: apiData.url,
-      apiFile: apiData.file
-    }));
-
-    // Simulate API analysis
-    setTimeout(() => {
+    try {
+      // Use the real transformation engine to analyze the API
+      let apiAnalysis: ParsedAPI;
+      
+      if (apiData.source === 'url' && apiData.url) {
+        apiAnalysis = await transformationEngine.analyzeAPI('url', apiData.url);
+      } else if (apiData.source === 'file' && apiData.file) {
+        apiAnalysis = await transformationEngine.analyzeAPI('file', apiData.file);
+      } else {
+        throw new Error('Invalid API source data');
+      }
+      
+      setParsedAPI(apiAnalysis);
+      
+      // Convert ParsedAPI to legacy format for backward compatibility
       const mockAnalysis = {
-        name: apiData.source === 'url' ? 'Custom API' : apiData.file?.name?.replace(/\.[^/.]+$/, '') || 'Uploaded API',
-        description: 'A comprehensive API for managing user data and operations',
-        endpoints: [
-          { name: 'Authentication', method: 'POST', path: '/auth/login', description: 'User authentication' },
-          { name: 'Get Users', method: 'GET', path: '/users', description: 'Retrieve user list' },
-          { name: 'Create User', method: 'POST', path: '/users', description: 'Create new user' },
-          { name: 'Update User', method: 'PUT', path: '/users/{id}', description: 'Update user details' },
-        ],
-        features: ['User Management', 'Authentication', 'Data Sync', 'Real-time Updates']
+        name: apiAnalysis.name,
+        description: apiAnalysis.description,
+        endpoints: apiAnalysis.endpoints.map(endpoint => ({
+          name: endpoint.name,
+          method: endpoint.method,
+          path: endpoint.path,
+          description: endpoint.description
+        })),
+        features: apiAnalysis.tags.length > 0 ? apiAnalysis.tags : ["API Integration"]
       };
 
-      setData(prev => ({ ...prev, analysis: mockAnalysis }));
+      setData(prev => ({ 
+        ...prev, 
+        apiSource: apiData.source,
+        apiUrl: apiData.url,
+        apiFile: apiData.file,
+        analysis: mockAnalysis 
+      }));
+      
       setCurrentStep('analysis');
+    } catch (error) {
+      console.error('API analysis failed:', error);
+      toast({
+        title: "Analysis Failed",
+        description: `Could not analyze the API specification: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   const handleConfirmAnalysis = () => {
     setCurrentStep('confirmation');
   };
 
-  const handleFinalConfirmation = () => {
+  const handleFinalConfirmation = async () => {
     setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      if (!parsedAPI || !data.platform) {
+        throw new Error('Missing API data or platform selection');
+      }
+      
+      // Use the real transformation engine to generate the plugin
+      const platformTransformation = data.apiUrl 
+        ? await transformationEngine.transformFromUrl(data.apiUrl, data.platform.id)
+        : data.apiFile 
+        ? await transformationEngine.transformFromFile(data.apiFile, data.platform.id)
+        : null;
+      
+      if (!platformTransformation) {
+        throw new Error('Failed to generate platform transformation');
+      }
+      
+      setTransformation(platformTransformation);
+      
+      // Here you would typically send the generated code to a backend service
+      // or allow the user to download the generated files
+      console.log('Generated transformation:', platformTransformation);
+      
       toast({
-        title: "Plugin Generation Started",
-        description: `Your ${data.platform?.name} plugin is being generated. You'll receive an email when it's ready.`,
+        title: "Plugin Generated!",
+        description: `Your ${data.platform.name} plugin has been created successfully. Check the console for the generated code.`,
       });
+      
       onOpenChange(false);
       resetModal();
-    }, 1500);
+    } catch (error) {
+      console.error('Plugin generation failed:', error);
+      toast({
+        title: "Generation Failed",
+        description: `Could not generate the plugin: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetModal = () => {
     setCurrentStep('platform');
     setData({} as PluginGenerationData);
+    setParsedAPI(null);
+    setTransformation(null);
     setIsLoading(false);
   };
 
