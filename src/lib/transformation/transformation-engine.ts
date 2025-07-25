@@ -1,17 +1,24 @@
-import { OpenAPIParser } from './openapi-parser';
 import { ShopifyTransformer } from './transformers/shopify-transformer';
 import { ParsedAPI, PlatformTransformation } from './types';
 
 export class TransformationEngine {
-  private parser: OpenAPIParser;
+  private parser: any;
   private transformers: Map<string, any>;
 
   constructor() {
-    this.parser = new OpenAPIParser();
+    this.parser = null;
     this.transformers = new Map();
     
     // Register platform transformers
     this.transformers.set('shopify', new ShopifyTransformer());
+  }
+
+  private async getParser() {
+    if (!this.parser) {
+      const { OpenAPIParser } = await import('./openapi-parser');
+      this.parser = new OpenAPIParser();
+    }
+    return this.parser;
   }
 
   async transformFromUrl(url: string, platform: string): Promise<PlatformTransformation> {
@@ -19,7 +26,8 @@ export class TransformationEngine {
     
     try {
       // Parse the OpenAPI specification
-      const parsedAPI = await this.parser.parseFromUrl(url);
+      const parser = await this.getParser();
+      const parsedAPI = await parser.parseFromUrl(url);
       console.log('API parsed successfully:', parsedAPI.name);
       
       // Get the appropriate transformer
@@ -44,7 +52,8 @@ export class TransformationEngine {
     
     try {
       // Parse the OpenAPI specification
-      const parsedAPI = await this.parser.parseFromFile(file);
+      const parser = await this.getParser();
+      const parsedAPI = await parser.parseFromFile(file);
       console.log('API parsed successfully:', parsedAPI.name);
       
       // Get the appropriate transformer
@@ -66,10 +75,11 @@ export class TransformationEngine {
 
   async analyzeAPI(source: 'url' | 'file', data: string | File): Promise<ParsedAPI> {
     try {
+      const parser = await this.getParser();
       if (source === 'url') {
-        return await this.parser.parseFromUrl(data as string);
+        return await parser.parseFromUrl(data as string);
       } else {
-        return await this.parser.parseFromFile(data as File);
+        return await parser.parseFromFile(data as File);
       }
     } catch (error) {
       console.error('API analysis failed:', error);

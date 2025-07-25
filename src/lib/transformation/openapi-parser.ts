@@ -1,9 +1,19 @@
-import SwaggerParser from '@apidevtools/swagger-parser';
 import { ParsedAPI, OpenAPISpec, APIEndpoint, AuthenticationMethod, EndpointParameter } from './types';
 
 export class OpenAPIParser {
+  private async getSwaggerParser() {
+    try {
+      const moduleName = '@apidevtools/swagger-parser';
+      const SwaggerParser = await import(/* @vite-ignore */ moduleName);
+      return SwaggerParser.default;
+    } catch (error) {
+      throw new Error('OpenAPI parsing is not available in this environment. This feature requires additional dependencies.');
+    }
+  }
+
   async parseFromUrl(url: string): Promise<ParsedAPI> {
     try {
+      const SwaggerParser = await this.getSwaggerParser();
       const api = await SwaggerParser.dereference(url) as OpenAPISpec;
       return this.parseSpec(api);
     } catch (error) {
@@ -25,6 +35,7 @@ export class OpenAPIParser {
         spec = yaml.load(content) as OpenAPISpec;
       }
       
+      const SwaggerParser = await this.getSwaggerParser();
       const api = await SwaggerParser.dereference(spec) as OpenAPISpec;
       return this.parseSpec(api);
     } catch (error) {
