@@ -1,4 +1,5 @@
 import { ParsedAPI, PlatformTransformation } from './types';
+import { ProductionTransformer } from './production-transformer';
 
 // Lightweight interface for the transformation engine
 export interface LazyTransformationEngine {
@@ -69,14 +70,21 @@ export async function getTransformationEngine(): Promise<LazyTransformationEngin
   isLoading = true;
 
   try {
-    // Try to dynamically import the heavy transformation engine
+    // Use production-safe transformer in production builds
+    if (import.meta.env.PROD) {
+      transformationEngineInstance = new ProductionTransformer();
+      isLoading = false;
+      return transformationEngineInstance;
+    }
+    
+    // Try to dynamically import the heavy transformation engine in development
     const { transformationEngine } = await import('./transformation-engine');
     transformationEngineInstance = transformationEngine;
     isLoading = false;
     return transformationEngineInstance;
   } catch (error) {
-    console.warn('Failed to load transformation engine, using mock:', error);
-    transformationEngineInstance = new MockTransformationEngine();
+    console.warn('Failed to load transformation engine, using production transformer:', error);
+    transformationEngineInstance = new ProductionTransformer();
     isLoading = false;
     return transformationEngineInstance;
   }

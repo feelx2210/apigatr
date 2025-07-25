@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => ({
             if (id.includes('react') || id.includes('react-dom')) {
               return 'vendor';
             }
-            if (id.includes('@apidevtools/swagger-parser') || id.includes('jszip') || id.includes('js-yaml')) {
+            if (id.includes('jszip') || id.includes('js-yaml')) {
               return 'transformation';
             }
             if (id.includes('lucide-react') || id.includes('@radix-ui')) {
@@ -49,7 +49,6 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 1500
   },
   optimizeDeps: {
-    exclude: ['@apidevtools/swagger-parser'],
     include: ['react', 'react-dom']
   },
   define: {
