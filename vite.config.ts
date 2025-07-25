@@ -21,17 +21,35 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    target: 'esnext',
+    minify: 'esbuild',
+    sourcemap: false,
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          transformation: ['@apidevtools/swagger-parser', 'jszip', 'js-yaml']
-        }
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor';
+            }
+            if (id.includes('@apidevtools/swagger-parser') || id.includes('jszip') || id.includes('js-yaml')) {
+              return 'transformation';
+            }
+            if (id.includes('lucide-react') || id.includes('@radix-ui')) {
+              return 'ui';
+            }
+            return 'vendor';
+          }
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1500
   },
   optimizeDeps: {
-    exclude: ['@apidevtools/swagger-parser']
+    exclude: ['@apidevtools/swagger-parser'],
+    include: ['react', 'react-dom']
   }
 }));
