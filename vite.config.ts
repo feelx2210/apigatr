@@ -20,4 +20,18 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          transformation: ['@apidevtools/swagger-parser', 'jszip', 'js-yaml']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  },
+  optimizeDeps: {
+    exclude: ['@apidevtools/swagger-parser']
+  }
 }));

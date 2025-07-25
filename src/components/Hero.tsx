@@ -1,8 +1,15 @@
 
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Globe, Shield, Zap } from "lucide-react";
-import PluginGenerationModal from "./PluginGenerationModal";
+import PluginGenerationFallback from "./PluginGenerationFallback";
+
+// Lazy load the modal to avoid loading heavy dependencies until needed
+const PluginGenerationModal = lazy(() => 
+  import("./PluginGenerationModal").catch(() => ({
+    default: PluginGenerationFallback
+  }))
+);
 
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,10 +71,12 @@ const Hero = () => {
         </div>
       </div>
       
-      <PluginGenerationModal 
-        open={isModalOpen} 
-        onOpenChange={setIsModalOpen} 
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <PluginGenerationModal 
+          open={isModalOpen} 
+          onOpenChange={setIsModalOpen} 
+        />
+      </Suspense>
     </section>
   );
 };
