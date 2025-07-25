@@ -13,7 +13,8 @@ import { ArrowLeft, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Platform, PluginGenerationData } from "@/types/platform";
 import { platforms } from "@/data/platforms";
-import { transformationEngine } from "@/lib/transformation/transformation-engine";
+import { getTransformationEngine } from "@/lib/transformation/lazy-transformation-engine";
+import { TransformationErrorBoundary } from "./TransformationErrorBoundary";
 import type { ParsedAPI, PlatformTransformation } from "@/lib/transformation/types";
 import PlatformCard from "./PlatformCard";
 import ApiUploadStep from "./ApiUploadStep";
@@ -43,13 +44,14 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
   const handleApiSubmit = async (apiData: { source: 'url' | 'file'; url?: string; file?: File }) => {
     setIsLoading(true);
     try {
-      // Use the real transformation engine to analyze the API
+      // Use the lazy transformation engine to analyze the API
+      const engine = await getTransformationEngine();
       let apiAnalysis: ParsedAPI;
       
       if (apiData.source === 'url' && apiData.url) {
-        apiAnalysis = await transformationEngine.analyzeAPI('url', apiData.url);
+        apiAnalysis = await engine.analyzeAPI('url', apiData.url);
       } else if (apiData.source === 'file' && apiData.file) {
-        apiAnalysis = await transformationEngine.analyzeAPI('file', apiData.file);
+        apiAnalysis = await engine.analyzeAPI('file', apiData.file);
       } else {
         throw new Error('Invalid API source data');
       }
@@ -101,11 +103,12 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
         throw new Error('Missing API data or platform selection');
       }
       
-      // Use the real transformation engine to generate the plugin
+      // Use the lazy transformation engine to generate the plugin
+      const engine = await getTransformationEngine();
       const platformTransformation = data.apiUrl 
-        ? await transformationEngine.transformFromUrl(data.apiUrl, data.platform.id)
+        ? await engine.transformFromUrl(data.apiUrl, data.platform.id)
         : data.apiFile 
-        ? await transformationEngine.transformFromFile(data.apiFile, data.platform.id)
+        ? await engine.transformFromFile(data.apiFile, data.platform.id)
         : null;
       
       if (!platformTransformation) {
@@ -185,6 +188,7 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
           </div>
         </DialogHeader>
 
+        <TransformationErrorBoundary onRetry={() => setCurrentStep('platform')}>
         <div className="mt-6">
           {currentStep === 'platform' && (
             <div className="space-y-4">
@@ -306,6 +310,7 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
             </div>
           )}
         </div>
+        </TransformationErrorBoundary>
       </DialogContent>
     </Dialog>
     

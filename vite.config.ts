@@ -51,5 +51,8 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     exclude: ['@apidevtools/swagger-parser'],
     include: ['react', 'react-dom']
+  },
+  define: {
+    global: 'globalThis',
   }
 }));

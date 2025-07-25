@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     
     permissions:
       contents: read
@@ -30,9 +30,17 @@ jobs:
         node-version: '20'
         cache: 'npm'
     
+    - name: Cache node modules
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    
     - name: Install dependencies
       run: |
-        npm ci --prefer-offline --no-audit
+        npm ci --prefer-offline --no-audit --ignore-engines
         npm list --depth=0
     
     - name: Build
@@ -42,8 +50,9 @@ jobs:
         echo "Build completed successfully"
         ls -la dist/
       env:
-        NODE_OPTIONS: '--max-old-space-size=6144'
+        NODE_OPTIONS: '--max-old-space-size=8192 --max-semi-space-size=1024'
         NODE_ENV: 'production'
+        CI: 'true'
     
     - name: Setup Pages
       uses: actions/configure-pages@v4
