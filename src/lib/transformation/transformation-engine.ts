@@ -1,4 +1,5 @@
 import { ShopifyTransformer } from './transformers/shopify-transformer';
+import { WordPressTransformer } from './transformers/wordpress-transformer';
 import { ParsedAPI, PlatformTransformation } from './types';
 
 export class TransformationEngine {
@@ -11,6 +12,7 @@ export class TransformationEngine {
     
     // Register platform transformers
     this.transformers.set('shopify', new ShopifyTransformer());
+    this.transformers.set('wordpress', new WordPressTransformer());
   }
 
   private async getParser() {

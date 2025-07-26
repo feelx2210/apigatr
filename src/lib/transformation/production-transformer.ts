@@ -134,7 +134,7 @@ export class ProductionTransformer implements LazyTransformationEngine {
   }
 
   getSupportedPlatforms(): string[] {
-    return ['shopify', 'woocommerce', 'magento'];
+    return ['shopify', 'wordpress', 'woocommerce', 'magento'];
   }
 
   hasPlatformSupport(platform: string): boolean {
