@@ -35,12 +35,12 @@ export const platforms: Platform[] = [
     requirements: ["HTML/CSS/JS", "Webflow CMS", "Custom code blocks"]
   },
   {
-    id: "zapier",
-    name: "Zapier",
-    description: "Build integrations for workflow automation",
-    logo: "⚡",
-    features: ["Triggers", "Actions", "Authentication", "Webhook support"],
-    requirements: ["REST API", "Zapier CLI", "App store submission"]
+    id: "figma",
+    name: "Figma",
+    description: "Build plugins that connect your API to Figma",
+    logo: "🎨",
+    features: ["UI panels", "Network requests (UI)", "Client storage", "Commands"],
+    requirements: ["Figma Plugin API", "Manifest v2", "HTML/CSS/JS"]
   },
   {
     id: "make",

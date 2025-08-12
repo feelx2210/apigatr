@@ -55,28 +55,55 @@ export const PluginDownloadModal: React.FC<PluginDownloadModalProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const installationSteps = [
-    {
-      title: "1. Extract Files",
-      description: "Extract the downloaded ZIP file to your local development environment."
-    },
-    {
-      title: "2. Install Dependencies",
-      description: "Navigate to the extracted folder and run 'npm install' to install all required dependencies."
-    },
-    {
-      title: "3. Configure API Keys",
-      description: "Add your API credentials to the .env file. Check the README for required environment variables."
-    },
-    {
-      title: "4. Setup Shopify CLI",
-      description: "Install Shopify CLI if you haven't already: npm install -g @shopify/cli @shopify/theme"
-    },
-    {
-      title: "5. Deploy to Shopify",
-      description: "Run 'shopify app serve' to start development or 'shopify app deploy' for production."
-    }
-  ];
+  const isFigma = platformName.toLowerCase() === 'figma';
+  const installationSteps = isFigma
+    ? [
+        {
+          title: '1. Extract Files',
+          description: 'Extract the downloaded ZIP file to a local folder (figma-plugin/*).',
+        },
+        {
+          title: '2. Open Figma Desktop',
+          description: 'Use the Figma desktop app (required for local development plugins).',
+        },
+        {
+          title: '3. Import Manifest',
+          description: 'Plugins → Development → Import plugin from manifest… and select figma-plugin/manifest.json.',
+        },
+        {
+          title: '4. Configure Settings',
+          description: 'Open the plugin → Settings tab. Set Base URL and API Key (stored with clientStorage).',
+        },
+        {
+          title: '5. Run Endpoints',
+          description: 'Pick an endpoint and click Run. For translation responses, use “Apply to Selection”.',
+        },
+      ]
+    : [
+        {
+          title: '1. Extract Files',
+          description: "Extract the downloaded ZIP file to your local development environment.",
+        },
+        {
+          title: '2. Install Dependencies',
+          description: "Navigate to the extracted folder and run 'npm install' to install all required dependencies.",
+        },
+        {
+          title: '3. Configure API Keys',
+          description: "Add your API credentials to the .env file. Check the README for required environment variables.",
+        },
+        {
+          title: '4. Setup Shopify CLI',
+          description: "Install Shopify CLI if you haven't already: npm install -g @shopify/cli @shopify/theme",
+        },
+        {
+          title: '5. Deploy to Shopify',
+          description: "Run 'shopify app serve' to start development or 'shopify app deploy' for production.",
+        },
+      ];
+
+  const docsUrl = isFigma ? 'https://www.figma.com/plugin-docs/intro/' : 'https://docs.shopify.com/apps';
+  const docsLabel = isFigma ? 'Figma Plugin Docs' : 'Shopify App Docs';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -166,11 +193,11 @@ export const PluginDownloadModal: React.FC<PluginDownloadModalProps> = ({
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => window.open('https://docs.shopify.com/apps', '_blank')}
+              onClick={() => window.open(docsUrl, '_blank')}
               className="flex-1"
             >
               <Github className="w-4 h-4 mr-2" />
-              Shopify App Docs
+              {docsLabel}
             </Button>
           </div>
         </div>
