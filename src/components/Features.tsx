@@ -16,12 +16,12 @@ const Features = () => {
     {
       icon: Upload,
       title: "Upload & Generate",
-      description: "Simply upload your OpenAPI docs and watch as we instantly generate plugins for 100+ platforms."
+      description: "Simply upload your OpenAPI docs and watch as we instantly generate plugins for Figma, WordPress, and Shopify."
     },
     {
       icon: Globe,
-      title: "Multi-Platform Support",
-      description: "Deploy to Shopify, Webflow, WordPress, Bubble, and dozens of other platforms with one click."
+      title: "3 Core Platforms",
+      description: "Deploy to Figma, WordPress, and Shopify with perfect optimization and reliability for each platform."
     },
     {
       icon: RefreshCw,

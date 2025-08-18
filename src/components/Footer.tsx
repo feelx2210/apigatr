@@ -13,7 +13,7 @@ const Footer = () => {
             Ready to scale your API?
           </h2>
           <p className="text-xl text-crocodile-medium mb-8 max-w-2xl mx-auto">
-            Join thousands of developers who are already using APIGATR to deploy their APIs everywhere.
+            Join developers who trust APIGATR to perfectly deploy their APIs to Figma, WordPress, and Shopify.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <Input 
@@ -39,7 +39,7 @@ const Footer = () => {
               <span className="text-2xl font-bold">APIGATR</span>
             </div>
             <p className="text-gray-300 max-w-sm">
-              Transform your APIs into plugins for 100+ platforms with live sync, versioning, and enterprise security.
+              The friendly alligator that transforms your APIs into plugins for Figma, WordPress & Shopify with live sync and enterprise security.
             </p>
             <div className="flex space-x-4">
               <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white hover:bg-crocodile-medium">

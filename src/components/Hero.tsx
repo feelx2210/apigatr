@@ -25,13 +25,13 @@ const Hero = () => {
       <div className="container mx-auto px-4 relative">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-crocodile-dark mb-4 leading-tight">
-            Turn your API into
+            The friendly alligator that eats APIs and spits out
             <span className="block text-primary">plugins</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-3xl mx-auto leading-relaxed">
             Upload your API docs and instantly generate ready-to-publish plugins for 
-            <span className="font-semibold text-crocodile-medium"> Shopify, Webflow, WordPress, and more</span> – 
+            <span className="font-semibold text-crocodile-medium"> Figma, WordPress, and Shopify</span> – 
             with live sync, versioning, and usage insights built in.
           </p>
           
@@ -57,7 +57,7 @@ const Hero = () => {
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center">
               <Globe className="w-4 h-4 mr-2 text-crocodile-medium" />
-              100+ Platforms
+              3 Core Platforms
             </div>
             <div className="flex items-center">
               <Shield className="w-4 h-4 mr-2 text-crocodile-medium" />

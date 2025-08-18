@@ -11,7 +11,7 @@ const Pricing = () => {
       description: "Perfect for small teams getting started",
       features: [
         "Up to 3 APIs",
-        "5 platforms",
+        "3 core platforms",
         "10K API calls/month",
         "Basic analytics",
         "Email support",
@@ -27,7 +27,7 @@ const Pricing = () => {
       description: "For growing businesses with multiple APIs",
       features: [
         "Up to 15 APIs",
-        "All 100+ platforms",
+        "All 3 platforms + advanced features",
         "100K API calls/month",
         "Advanced analytics",
         "Priority support",
@@ -45,13 +45,13 @@ const Pricing = () => {
       description: "For large organizations with complex needs",
       features: [
         "Unlimited APIs",
-        "All platforms + custom",
+        "All 3 platforms + custom integrations",
         "Unlimited API calls",
         "Enterprise analytics",
         "Dedicated support",
         "White-label solution",
         "SSO & advanced security",
-        "Custom integrations",
+        "Custom platform development",
         "SLA guarantee"
       ],
       buttonText: "Contact Sales",

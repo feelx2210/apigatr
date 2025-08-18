@@ -1,17 +1,8 @@
 const Brands = () => {
   const brands = [
-    { name: "Shopify", logo: "🛍️" },
+    { name: "Figma", logo: "🐊" },
     { name: "WordPress", logo: "📝" },
-    { name: "Webflow", logo: "🌊" },
-    { name: "Bubble", logo: "🫧" },
-    { name: "Zapier", logo: "⚡" },
-    { name: "Make", logo: "🔧" },
-    { name: "Airtable", logo: "📊" },
-    { name: "Notion", logo: "📋" },
-    { name: "Slack", logo: "💬" },
-    { name: "Discord", logo: "🎮" },
-    { name: "HubSpot", logo: "📈" },
-    { name: "Salesforce", logo: "☁️" }
+    { name: "Shopify", logo: "🛍️" }
   ];
 
   return (
@@ -19,11 +10,11 @@ const Brands = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <p className="text-muted-foreground text-lg mb-8">
-            Deploy your plugins to 100+ platforms instantly
+            Deploy your plugins to our 3 core platforms instantly
           </p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-2xl mx-auto">
           {brands.map((brand, index) => (
             <div 
               key={index}
@@ -41,7 +32,7 @@ const Brands = () => {
         
         <div className="text-center mt-12">
           <p className="text-sm text-muted-foreground">
-            And many more platforms being added weekly
+            Quality over quantity - we perfect these 3 platforms for maximum reliability
           </p>
         </div>
       </div>
