@@ -5,7 +5,7 @@ import { Github, Twitter, Linkedin, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-crocodile-dark text-white py-16">
+    <footer className="text-white py-16" style={{ backgroundColor: 'hsl(var(--crocodile-dark))' }}>
       <div className="container mx-auto px-4">
         {/* CTA Section */}
         <div className="text-center mb-16 py-12 rounded-2xl" style={{ background: 'var(--gradient-secondary)' }}>
@@ -31,11 +31,9 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <img 
-                src={apigatrLogo} 
-                alt="APIGATR" 
-                className="h-8 w-8 filter brightness-0 invert"
-              />
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <span className="text-2xl">🐊</span>
+              </div>
               <span className="text-2xl font-bold">APIGATR</span>
             </div>
             <p className="text-gray-300 max-w-sm">
