@@ -24,7 +24,7 @@ const Pricing = () => {
     },
     {
       name: "🐊 Growing Gator",
-      price: "$49-$99",
+      price: "from $49",
       period: "/month",
       description: "Ideal if you want your plugins to stay fresh and always in sync with your API",
       features: [
@@ -70,7 +70,7 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <Card 
               key={index} 
-              className={`relative border-border hover:shadow-lg transition-all duration-300 ${
+              className={`relative border-border hover:shadow-lg transition-all duration-300 flex flex-col h-full ${
                 plan.popular 
                   ? 'border-crocodile-medium shadow-lg scale-105' 
                   : 'hover:border-crocodile-light'
@@ -95,7 +95,7 @@ const Pricing = () => {
                 </div>
               </CardHeader>
               
-               <CardContent>
+               <CardContent className="flex-grow">
                 <ul className="space-y-3">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center">
@@ -125,7 +125,7 @@ const Pricing = () => {
                     </div>
                   </div>
                 )}
-              </CardContent>
+               </CardContent>
               
               <CardFooter>
                 <Button 
