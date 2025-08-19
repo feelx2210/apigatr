@@ -5,54 +5,49 @@ import { Check, Star } from "lucide-react";
 const Pricing = () => {
   const plans = [
     {
-      name: "Starter",
-      price: "$29",
-      period: "/month",
-      description: "Perfect for small teams getting started",
+      name: "🐊 Single Bite",
+      price: "One-time",
+      period: "",
+      description: "Perfect for companies who just want to turn their API into a plugin once",
       features: [
-        "Up to 3 APIs",
-        "3 core platforms",
-        "10K API calls/month",
-        "Basic analytics",
-        "Email support",
-        "Standard templates"
+        "1 plugin scaffold (choose platform)",
+        "Download as ready-to-install ZIP",
+        "Basic email support"
       ],
-      buttonText: "Start Free Trial",
-      popular: false
+      buttonText: "Choose Platform",
+      popular: false,
+      platformPricing: {
+        figma: "$99",
+        wordpress: "$199", 
+        shopify: "$399"
+      }
     },
     {
-      name: "Professional",
-      price: "$99",
+      name: "🐊 Growing Gator",
+      price: "$49-$99",
       period: "/month",
-      description: "For growing businesses with multiple APIs",
+      description: "Ideal if you want your plugins to stay fresh and always in sync with your API",
       features: [
-        "Up to 15 APIs",
-        "All 3 platforms + advanced features",
-        "100K API calls/month",
-        "Advanced analytics",
-        "Priority support",
-        "Custom branding",
-        "Version control",
-        "Team collaboration"
+        "Everything in Single Bite",
+        "Auto-Sync: API changes update plugins automatically",
+        "Plugin hosting & versioning",
+        "Basic analytics (downloads, last usage)",
+        "$49/month → 1 plugin",
+        "$99/month → up to 3 plugins"
       ],
-      buttonText: "Start Free Trial",
+      buttonText: "Start Subscription",
       popular: true
     },
     {
-      name: "Enterprise",
+      name: "🐊 Enterprise Swamp",
       price: "Custom",
       period: "",
-      description: "For large organizations with complex needs",
+      description: "For SaaS companies running multiple plugins across platforms",
       features: [
-        "Unlimited APIs",
-        "All 3 platforms + custom integrations",
-        "Unlimited API calls",
-        "Enterprise analytics",
-        "Dedicated support",
-        "White-label solution",
-        "SSO & advanced security",
-        "Custom platform development",
-        "SLA guarantee"
+        "Everything in Growing Gator",
+        "Multi-platform management dashboard",
+        "Priority support & SLA",
+        "Private hosting & CI/CD integration"
       ],
       buttonText: "Contact Sales",
       popular: false
@@ -67,7 +62,7 @@ const Pricing = () => {
             Simple, transparent pricing
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose the plan that fits your needs. All plans include a 14-day free trial.
+            Choose what works for you - one-time purchases, subscriptions, or custom solutions.
           </p>
         </div>
         
@@ -100,7 +95,7 @@ const Pricing = () => {
                 </div>
               </CardHeader>
               
-              <CardContent>
+               <CardContent>
                 <ul className="space-y-3">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center">
@@ -109,6 +104,27 @@ const Pricing = () => {
                     </li>
                   ))}
                 </ul>
+                
+                {/* Platform-specific pricing for Single Bite */}
+                {plan.platformPricing && (
+                  <div className="mt-6 pt-4 border-t border-border">
+                    <p className="text-sm text-muted-foreground mb-3">Platform-specific pricing:</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Figma</span>
+                        <span className="font-semibold text-crocodile-dark">{plan.platformPricing.figma}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">WordPress</span>
+                        <span className="font-semibold text-crocodile-dark">{plan.platformPricing.wordpress}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Shopify</span>
+                        <span className="font-semibold text-crocodile-dark">{plan.platformPricing.shopify}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
               
               <CardFooter>
@@ -129,7 +145,7 @@ const Pricing = () => {
         
         <div className="text-center mt-12">
           <p className="text-muted-foreground">
-            All plans include 14-day free trial • No setup fees • Cancel anytime
+            One-time purchases • Monthly subscriptions • Custom enterprise solutions
           </p>
         </div>
       </div>
