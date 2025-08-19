@@ -17,14 +17,14 @@ const Pricing = () => {
       buttonText: "Choose Platform",
       popular: false,
       platformPricing: {
-        figma: "$99",
-        wordpress: "$199", 
-        shopify: "$399"
+        figma: "$299",
+        wordpress: "$499", 
+        shopify: "$699"
       }
     },
     {
       name: "🐊 Growing Gator",
-      price: "from $49",
+      price: "from $99",
       period: "/month",
       description: "Ideal if you want your plugins to stay fresh and always in sync with your API",
       features: [
@@ -32,8 +32,8 @@ const Pricing = () => {
         "Auto-Sync: API changes update plugins automatically",
         "Plugin hosting & versioning",
         "Basic analytics (downloads, last usage)",
-        "$49/month → 1 plugin",
-        "$99/month → up to 3 plugins"
+        "$99/month → 1 plugin",
+        "$199/month → up to 3 plugins"
       ],
       buttonText: "Start Subscription",
       popular: true
