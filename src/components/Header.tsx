@@ -4,9 +4,11 @@ import { usePasswordAuth } from "@/hooks/use-password-auth";
 import { LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import apigatrLogo from "@/assets/apigatr-logo.png";
+import { useLogoFont } from "@/hooks/use-logo-font";
 
 const Header = () => {
   const { logout } = usePasswordAuth();
+  const { fontClass } = useLogoFont();
 
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -15,7 +17,7 @@ const Header = () => {
           <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm border border-border">
             <span className="text-2xl">🐊</span>
           </div>
-          <span className="text-2xl font-bold text-crocodile-dark">APIGATR</span>
+          <span className={`text-2xl font-bold text-crocodile-dark ${fontClass}`}>APIGATR</span>
         </Link>
         
         <nav className="hidden md:flex items-center space-x-8">
