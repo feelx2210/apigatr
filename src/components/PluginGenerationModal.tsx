@@ -16,9 +16,11 @@ import { platforms } from "@/data/platforms";
 import { getTransformationEngine } from "@/lib/transformation/lazy-transformation-engine";
 import { TransformationErrorBoundary } from "./TransformationErrorBoundary";
 import type { ParsedAPI, PlatformTransformation } from "@/lib/transformation/types";
+import { useApiIntelligence } from "@/hooks/use-api-intelligence";
 import PlatformCard from "./PlatformCard";
 import ApiUploadStep from "./ApiUploadStep";
 import ApiAnalysisStep from "./ApiAnalysisStep";
+import InteractiveAnalysisStep from "./InteractiveAnalysisStep";
 import { PluginDownloadModal } from "./PluginDownloadModal";
 
 interface PluginGenerationModalProps {
@@ -26,7 +28,7 @@ interface PluginGenerationModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-type Step = 'platform' | 'upload' | 'analysis' | 'confirmation';
+type Step = 'platform' | 'upload' | 'analysis' | 'interactive-analysis' | 'confirmation';
 
 const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProps) => {
   const [currentStep, setCurrentStep] = useState<Step>('platform');
@@ -35,7 +37,9 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
   const [parsedAPI, setParsedAPI] = useState<ParsedAPI | null>(null);
   const [transformation, setTransformation] = useState<PlatformTransformation | null>(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [analysisSessionId, setAnalysisSessionId] = useState<string | null>(null);
   const { toast } = useToast();
+  const { startAnalysis } = useApiIntelligence();
 
   const handlePlatformSelect = (platform: Platform) => {
     setData(prev => ({ ...prev, platform }));
@@ -79,7 +83,9 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
         analysis: mockAnalysis 
       }));
       
-      setCurrentStep('analysis');
+      // Start intelligent analysis
+      await startAnalysis(apiAnalysis);
+      setCurrentStep('interactive-analysis');
     } catch (error) {
       console.error('API analysis failed:', error);
       toast({
@@ -96,6 +102,11 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
     setCurrentStep('confirmation');
   };
 
+  const handleInteractiveAnalysisComplete = (sessionId: string) => {
+    setAnalysisSessionId(sessionId);
+    setCurrentStep('confirmation');
+  };
+
   const handleFinalConfirmation = async () => {
     setIsLoading(true);
     try {
@@ -105,11 +116,20 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
       
       // Use the lazy transformation engine to generate the plugin
       const engine = await getTransformationEngine();
-      const platformTransformation = data.apiUrl 
-        ? await engine.transformFromUrl(data.apiUrl, data.platform.id)
-        : data.apiFile 
-        ? await engine.transformFromFile(data.apiFile, data.platform.id)
-        : null;
+      let platformTransformation: PlatformTransformation | null = null;
+
+      if (analysisSessionId && engine.getAnalysisSession && engine.transformFromSession) {
+        // Use intelligent transformation with session data
+        const session = engine.getAnalysisSession(analysisSessionId);
+        platformTransformation = await engine.transformFromSession(session, data.platform.id);
+      } else {
+        // Fallback to traditional transformation
+        platformTransformation = data.apiUrl 
+          ? await engine.transformFromUrl(data.apiUrl, data.platform.id)
+          : data.apiFile 
+          ? await engine.transformFromFile(data.apiFile, data.platform.id)
+          : null;
+      }
       
       if (!platformTransformation) {
         throw new Error('Failed to generate platform transformation');
@@ -145,6 +165,7 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
     platform: 'Choose Your Platform',
     upload: 'Upload API Documentation',
     analysis: 'Review API Analysis',
+    'interactive-analysis': 'Smart API Analysis',
     confirmation: 'Confirm Plugin Generation'
   };
 
@@ -152,6 +173,7 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
     platform: 'Select the platform where you want to create your plugin',
     upload: `Upload your API documentation for ${data.platform?.name || 'the selected platform'}`,
     analysis: 'Review what we found in your API documentation',
+    'interactive-analysis': 'Let our AI understand your API and suggest the best plugin features',
     confirmation: 'Confirm the details and start plugin generation'
   };
 
@@ -169,18 +191,18 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
           
           {/* Step indicator */}
           <div className="flex items-center gap-2 mt-4">
-            {(['platform', 'upload', 'analysis', 'confirmation'] as Step[]).map((step, index) => (
+            {(['platform', 'upload', 'interactive-analysis', 'confirmation'] as Step[]).map((step, index) => (
               <div key={step} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   step === currentStep ? 'bg-crocodile-medium text-white' :
-                  ['platform', 'upload', 'analysis'].indexOf(currentStep) > ['platform', 'upload', 'analysis'].indexOf(step) ? 'bg-crocodile-light text-crocodile-dark' :
+                  ['platform', 'upload', 'interactive-analysis'].indexOf(currentStep) > ['platform', 'upload', 'interactive-analysis'].indexOf(step) ? 'bg-crocodile-light text-crocodile-dark' :
                   'bg-gray-200 text-gray-500'
                 }`}>
                   {index + 1}
                 </div>
                 {index < 3 && (
                   <div className={`w-12 h-0.5 ${
-                    ['platform', 'upload', 'analysis'].indexOf(currentStep) > index ? 'bg-crocodile-light' : 'bg-gray-200'
+                    ['platform', 'upload', 'interactive-analysis'].indexOf(currentStep) > index ? 'bg-crocodile-light' : 'bg-gray-200'
                   }`} />
                 )}
               </div>
@@ -238,6 +260,16 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
             </div>
           )}
 
+          {currentStep === 'interactive-analysis' && (
+            <div>
+              <InteractiveAnalysisStep
+                platform={data.platform}
+                onComplete={handleInteractiveAnalysisComplete}
+                onBack={() => setCurrentStep('upload')}
+              />
+            </div>
+          )}
+
           {currentStep === 'confirmation' && (
             <div className="space-y-6">
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -286,7 +318,7 @@ const PluginGenerationModal = ({ open, onOpenChange }: PluginGenerationModalProp
               <div className="flex justify-between pt-4">
                 <Button
                   variant="outline"
-                  onClick={() => setCurrentStep('analysis')}
+                  onClick={() => setCurrentStep('interactive-analysis')}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back

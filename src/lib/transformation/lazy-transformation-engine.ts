@@ -1,5 +1,6 @@
 import { ParsedAPI, PlatformTransformation } from './types';
 import { ProductionTransformer } from './production-transformer';
+import type { AnalysisSession } from './interactive-analyzer';
 
 // Lightweight interface for the transformation engine
 export interface LazyTransformationEngine {
@@ -8,6 +9,11 @@ export interface LazyTransformationEngine {
   analyzeAPI(source: 'url' | 'file', data: string | File): Promise<ParsedAPI>;
   getSupportedPlatforms(): string[];
   hasPlatformSupport(platform: string): boolean;
+  
+  // Interactive analysis methods
+  startInteractiveAnalysis?(api: ParsedAPI): Promise<AnalysisSession>;
+  getAnalysisSession?(sessionId: string): AnalysisSession;
+  transformFromSession?(session: AnalysisSession, platform: string): Promise<PlatformTransformation>;
 }
 
 // Mock transformation engine for when heavy dependencies fail

@@ -2,14 +2,17 @@ import { ShopifyTransformer } from './transformers/shopify-transformer';
 import { WordPressTransformer } from './transformers/wordpress-transformer';
 import { FigmaTransformer } from './transformers/figma-transformer';
 import { ParsedAPI, PlatformTransformation } from './types';
+import { InteractiveAnalyzer, AnalysisSession } from './interactive-analyzer';
 
 export class TransformationEngine {
   private parser: any;
   private transformers: Map<string, any>;
+  private interactiveAnalyzer: InteractiveAnalyzer;
 
   constructor() {
     this.parser = null;
     this.transformers = new Map();
+    this.interactiveAnalyzer = new InteractiveAnalyzer();
     
     // Register platform transformers
     this.transformers.set('shopify', new ShopifyTransformer());
@@ -97,6 +100,43 @@ export class TransformationEngine {
 
   hasPlatformSupport(platform: string): boolean {
     return this.transformers.has(platform);
+  }
+
+  // New intelligent analysis methods
+  async startInteractiveAnalysis(api: ParsedAPI): Promise<AnalysisSession> {
+    return await this.interactiveAnalyzer.startAnalysis(api);
+  }
+
+  getAnalysisSession(sessionId: string): AnalysisSession {
+    return this.interactiveAnalyzer.getSession(sessionId);
+  }
+
+  confirmPurpose(sessionId: string, purpose: string): AnalysisSession {
+    return this.interactiveAnalyzer.confirmPurpose(sessionId, purpose);
+  }
+
+  updateFeatureSelection(sessionId: string, selectedFeatures: string[], customizations?: Record<string, any>): AnalysisSession {
+    return this.interactiveAnalyzer.updateFeatureSelection(sessionId, selectedFeatures, customizations);
+  }
+
+  finalizeAnalysis(sessionId: string): AnalysisSession {
+    return this.interactiveAnalyzer.finalizeAnalysis(sessionId);
+  }
+
+  async transformFromSession(session: AnalysisSession, platform: string): Promise<PlatformTransformation> {
+    const transformer = this.transformers.get(platform);
+    if (!transformer) {
+      throw new Error(`No transformer available for platform: ${platform}`);
+    }
+
+    // Use the refined spec from the session for more intelligent transformation
+    const transformation = transformer.transform(session.originalAPI, {
+      customizedSpec: session.refinedSpec,
+      userChoices: session.userChoices,
+      intelligence: session.intelligence
+    });
+
+    return transformation;
   }
 }
 
