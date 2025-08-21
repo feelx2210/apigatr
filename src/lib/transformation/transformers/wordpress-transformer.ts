@@ -1,17 +1,91 @@
 import { ParsedAPI, PlatformTransformation, PlatformFeature, UIComponent, CodeFile } from '../types';
+import { WordPressIntelligence } from '../wordpress-intelligence';
 
 export class WordPressTransformer {
-  transform(api: ParsedAPI): PlatformTransformation {
-    const features = this.mapApiToWordPressFeatures(api);
-    const codeFiles = this.generateWordPressCode(api, features);
+  transform(api: ParsedAPI, options?: { customizedSpec?: any; userChoices?: any; intelligence?: WordPressIntelligence }): PlatformTransformation {
+    // Use intelligent analysis if available
+    const intelligence = options?.intelligence;
+    const userChoices = options?.userChoices;
+    
+    const features = intelligence?.wordpressFeatures 
+      ? this.mapIntelligentFeatures(intelligence.wordpressFeatures, userChoices?.selectedFeatures || [])
+      : this.mapApiToWordPressFeatures(api);
+    
+    const codeFiles = this.generateWordPressCode(api, features, intelligence);
     
     return {
       platform: 'wordpress',
       features,
       codeFiles,
-      configuration: this.generateWordPressConfig(api),
-      documentation: this.generateDocumentation(api, features)
+      configuration: this.generateWordPressConfig(api, intelligence),
+      documentation: this.generateDocumentation(api, features, intelligence)
     };
+  }
+
+  private mapIntelligentFeatures(wordpressFeatures: any[], selectedFeatureIds: string[]): PlatformFeature[] {
+    return wordpressFeatures
+      .filter(feature => selectedFeatureIds.includes(feature.id))
+      .map(feature => ({
+        name: feature.name,
+        description: feature.description,
+        apiEndpoints: feature.endpoints?.map((e: any) => e.id) || [],
+        implementation: this.mapWordPressIntegrationType(feature.wordpressIntegration?.type),
+        userInterface: this.generateIntelligentUI(feature)
+      }));
+  }
+
+  private mapWordPressIntegrationType(wpType: string): 'admin-ui' | 'webhook' | 'api-integration' | 'theme-extension' | 'block' {
+    switch (wpType) {
+      case 'gutenberg-block': return 'block';
+      case 'theme-integration': return 'theme-extension';
+      case 'rest-endpoint': return 'api-integration';
+      case 'cron-job': return 'webhook';
+      default: return 'admin-ui';
+    }
+  }
+
+  private generateIntelligentUI(feature: any): UIComponent[] {
+    // Generate UI based on WordPress integration type
+    switch (feature.wordpressIntegration?.type) {
+      case 'gutenberg-block':
+        return [{
+          type: 'form' as const,
+          name: `${feature.id}-block`,
+          fields: [
+            { name: 'content', type: 'textarea' as const, label: 'Content to Process', required: true }
+          ],
+          actions: [
+            { name: 'process', type: 'submit' as const, endpoint: feature.endpoints?.[0]?.id }
+          ]
+        }];
+      case 'media-library':
+        return [{
+          type: 'form' as const,
+          name: `${feature.id}-media`,
+          fields: [
+            { name: 'auto-process', type: 'checkbox' as const, label: 'Auto-process uploads', required: false },
+            { name: 'quality', type: 'select' as const, label: 'Processing Quality', required: false, options: [
+              { label: 'High', value: 'high' },
+              { label: 'Medium', value: 'medium' },
+              { label: 'Low', value: 'low' }
+            ]}
+          ],
+          actions: [
+            { name: 'save-settings', type: 'submit' as const }
+          ]
+        }];
+      default:
+        return [{
+          type: 'form' as const,
+          name: `${feature.id}-form`,
+          fields: [
+            { name: 'input', type: 'text' as const, label: 'Input', required: true }
+          ],
+          actions: [
+            { name: 'submit', type: 'submit' as const }
+          ]
+        }];
+    }
   }
 
   private mapApiToWordPressFeatures(api: ParsedAPI): PlatformFeature[] {
@@ -177,7 +251,7 @@ export class WordPressTransformer {
     ];
   }
 
-  private generateWordPressCode(api: ParsedAPI, features: PlatformFeature[]): CodeFile[] {
+  private generateWordPressCode(api: ParsedAPI, features: PlatformFeature[], intelligence?: WordPressIntelligence): CodeFile[] {
     const files: CodeFile[] = [];
 
     // Main plugin file
@@ -1598,7 +1672,7 @@ add_action('${className.toLowerCase()}_sync_usage', function() {
     return 'https://api.example.com';
   }
 
-  private generateWordPressConfig(api: ParsedAPI): Record<string, any> {
+  private generateWordPressConfig(api: ParsedAPI, intelligence?: WordPressIntelligence): Record<string, any> {
     return {
       phpVersion: '7.4+',
       wordpressVersion: '5.0+',
@@ -1622,7 +1696,7 @@ add_action('${className.toLowerCase()}_sync_usage', function() {
     };
   }
 
-  private generateDocumentation(api: ParsedAPI, features: PlatformFeature[]): string {
+  private generateDocumentation(api: ParsedAPI, features: PlatformFeature[], intelligence?: WordPressIntelligence): string {
     const pluginName = api.name;
     const pluginSlug = api.name.toLowerCase().replace(/\s+/g, '-');
 

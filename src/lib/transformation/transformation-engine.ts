@@ -103,8 +103,8 @@ export class TransformationEngine {
   }
 
   // New intelligent analysis methods
-  async startInteractiveAnalysis(api: ParsedAPI): Promise<AnalysisSession> {
-    return await this.interactiveAnalyzer.startAnalysis(api);
+  async startInteractiveAnalysis(api: ParsedAPI, platform: string = 'figma'): Promise<AnalysisSession> {
+    return await this.interactiveAnalyzer.startAnalysis(api, platform);
   }
 
   getAnalysisSession(sessionId: string): AnalysisSession {
